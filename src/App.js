@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import s from './App.module.css';
 import { v4 as uuidv4 } from 'uuid';
+import useLocalStorage from './hooks/useLocalStorage';
 import ContactForm from './components/ContactForm';
 import Filter from './components/Filter';
 import ContactList from './components/ContactList';
@@ -13,18 +14,8 @@ const initialData = [
 ];
 
 export default function App() {
-  const [contacts, setContacts] = useState(() => {
-    const data = window.localStorage.getItem('contacts');
-    const parsedData = JSON.parse(data);
-    return data === null || parsedData.length === 0
-      ? [...initialData]
-      : parsedData;
-  });
+  const [contacts, setContacts] = useLocalStorage('contacts', initialData);
   const [filter, setFilter] = useState('');
-
-  useEffect(() => {
-    window.localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
 
   const createContact = ({ name, number }) => {
     if (!name || !number) {
